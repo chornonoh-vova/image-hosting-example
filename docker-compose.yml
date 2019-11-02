@@ -12,8 +12,9 @@ services:
     # deploy replicas configuration
     deploy:
       replicas: 2
-      restart_policy:
-        condition: on-failure
+    volumes:
+      # attach volume to persist image files
+      - image_files:/images
 
   # images retrieval service
   read_service:
@@ -25,8 +26,9 @@ services:
     # deploy replicas configuration
     deploy:
       replicas: 2
-      restart_policy:
-        condition: on-failure
+    volumes:
+      # attach volume to persist image files
+      - image_files:/images
 
   # database to store image data
   database:
@@ -40,20 +42,6 @@ services:
       - image_data:/data/db
       # attach initialization files
       - ./database:/docker-entrypoint-initdb.d
-
-  # servers for storing image files
-  file_service:
-    image: nginx:1.16.0-alpine
-    # deploy replicas configuration
-    deploy:
-      replicas: 4
-      restart_policy:
-        condition: on-failure
-    ports:
-      - "80:80"
-    volumes:
-      # attach volume to persist image files
-      - image_files:/usr/share/nginx/html
 
 # volumes needed for storing image data and files
 volumes:

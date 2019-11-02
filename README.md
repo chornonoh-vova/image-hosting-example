@@ -14,9 +14,7 @@ docker pull node:12.13.0-alpine
 # MongoDB
 # used as storage for additional image data
 docker pull mongo:3.4.23
-# Nginx
-# used as file server
-docker pull nginx:1.16.0-alpine
+
 ```
 
 ### Build image for read service
@@ -25,9 +23,10 @@ Command needs to be executed from the root of repository.
 
 ```bash
 docker build \
-  --file ./read-service/Dockerfile \
-  --tag image-read-service \
-  ./read-service
+  --file Dockerfile \
+  --build-arg NPM_TOKEN=${NPM_TOKEN} \
+  --build-arg SERVICE='read-service' \
+  --tag image-read-service .
 ```
 
 ### Build image for write service
@@ -36,9 +35,10 @@ Command needs to be executed from the root of repository.
 
 ```bash
 docker build \
-  --file ./write-service/Dockerfile \
-  --tag image-write-service \
-  ./write-service
+  --file Dockerfile \
+  --build-arg NPM_TOKEN=${NPM_TOKEN} \
+  --build-arg SERVICE='write-service' \
+  --tag image-write-service .
 ```
 
 ## Starting application
