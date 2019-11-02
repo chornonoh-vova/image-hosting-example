@@ -1,0 +1,61 @@
+version: "3.7"
+
+# services configuration
+services:
+  # images upload service
+  write_service:
+    image: image-write-service
+    environment:
+      DB_URL: "mongodb://username:password@database/media"
+    ports:
+      - "8001:80"
+    # deploy replicas configuration
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  # images retrieval service
+  read_service:
+    image: image-read-service
+    environment:
+      DB_URL: "mongodb://username:password@database/media"
+    ports:
+      - "8002:80"
+    # deploy replicas configuration
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  # database to store image data
+  database:
+    image: mongo:3.4.23
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: media
+    volumes:
+      # attach volume to persist image data
+      - image_data:/data/db
+      # attach initialization files
+      - ./database:/docker-entrypoint-initdb.d
+
+  # servers for storing image files
+  file_service:
+    image: nginx:1.16.0-alpine
+    # deploy replicas configuration
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+    volumes:
+      # attach volume to persist image files
+      - image_files:/usr/share/nginx/html
+
+# volumes needed for storing image data and files
+volumes:
+  image_data:
+  image_files:
