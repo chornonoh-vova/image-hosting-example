@@ -13,8 +13,9 @@ services:
     deploy:
       replicas: 2
     volumes:
-      # attach volume to persist image files
-      - image_files:/images
+      # attach volumes to persist image files
+      - image_files_volume1:/images/volume1
+      - image_files_volume2:/images/volume2
 
   # images retrieval service
   read_service:
@@ -27,8 +28,9 @@ services:
     deploy:
       replicas: 2
     volumes:
-      # attach volume to persist image files
-      - image_files:/images
+      # attach volumes to persist image files
+      - image_files_volume1:/images/volume1
+      - image_files_volume2:/images/volume2
 
   # database to store image data
   database:
@@ -46,4 +48,5 @@ services:
 # volumes needed for storing image data and files
 volumes:
   image_data:
-  image_files:
+  image_files_volume1:
+  image_files_volume2:
