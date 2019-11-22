@@ -17,12 +17,12 @@ const storage = multer.diskStorage({
               .then(files => ['/images/' + volume, files.length]));
     });
 
-    Promise.all(destinations => {
-      let dest = '';
-      let max = 0;
+    Promise.all(destinations).then(dests => {
+      let dest = dests[0][0];
+      let min = dests[0][1];
 
-      destinations.forEach(destination => {
-        if (destination[1] > max) {
+      dests.forEach(destination => {
+        if (destination[1] < min) {
           dest = destination[0];
         }
       });
